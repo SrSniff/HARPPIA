@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harppia Project - Gestão de Projetos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: #667eea;
+            font-size: 2em;
+        }
+
+        header p {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .card-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+        }
+
+        table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .hierarchy-item {
+            margin-left: 20px;
+            border-left: 2px solid #667eea;
+            padding-left: 10px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .badge-pessoa {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-entidade {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .info-item strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Harppia Project</h1>
+            <p>Sistema de Gestão de Projetos e Pacotes de Entrega</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('pacotes')">📦 Pacotes</button>
+            <button class="tab-btn" onclick="showTab('tarefas')">✅ Tarefas</button>
+            <button class="tab-btn" onclick="showTab('pessoas')">👥 Pessoas/Entidades</button>
+        </div>
+
+        <!-- Tab Pacotes -->
+        <div id="tab-pacotes" class="tab-content active">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Pacotes de Entrega</h2>
+                <button class="btn" onclick="openModal('modal-pacote')">+ Novo Pacote</button>
+            </div>
+            <div id="pacotes-list"></div>
+        </div>
+
+        <!-- Tab Tarefas -->
+        <div id="tab-tarefas" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Tarefas e Subtarefas</h2>
+                <div>
+                    <select id="filtro-pacote-tarefa" onchange="carregarTarefas()" style="padding: 10px; border-radius: 5px; margin-right: 10px;">
+                        <option value="">Todos os Pacotes</option>
+                    </select>
+                    <button class="btn" onclick="openModal('modal-tarefa')">+ Nova Tarefa</button>
+                </div>
+            </div>
+            <div id="tarefas-list"></div>
+        </div>
+
+        <!-- Tab Pessoas -->
+        <div id="tab-pessoas" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Pessoas e Entidades</h2>
+                <button class="btn" onclick="openModal('modal-pessoa')">+ Cadastrar</button>
+            </div>
+            <div id="pessoas-list"></div>
+        </div>
+    </div>
+
+    <!-- Modal Pacote -->
+    <div id="modal-pacote" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-pacote-title">Novo Pacote</h2>
+                <button class="modal-close" onclick="closeModal('modal-pacote')">&times;</button>
+            </div>
+            <form id="form-pacote" onsubmit="salvarPacote(event)">
+                <input type="hidden" id="pacote-id">
+                <div class="form-group">
+                    <label for="pacote-nome">Nome *</label>
+                    <input type="text" id="pacote-nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="pacote-descricao">Descrição</label>
+                    <textarea id="pacote-descricao"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="pacote-data-inicio">Data de Início</label>
+                    <input type="date" id="pacote-data-inicio">
+                </div>
+                <div class="form-group">
+                    <label for="pacote-data-fim">Data de Fim</label>
+                    <input type="date" id="pacote-data-fim">
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-pacote')">Cancelar</button>
+                    <button type="submit" class="btn">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Tarefa -->
+    <div id="modal-tarefa" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-tarefa-title">Nova Tarefa</h2>
+                <button class="modal-close" onclick="closeModal('modal-tarefa')">&times;</button>
+            </div>
+            <form id="form-tarefa" onsubmit="salvarTarefa(event)">
+                <input type="hidden" id="tarefa-id">
+                <div class="form-group">
+                    <label for="tarefa-pacote">Pacote *</label>
+                    <select id="tarefa-pacote" required onchange="carregarTarefasParaParente()">
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-parent">Tarefa Pai (opcional)</label>
+                    <select id="tarefa-parent">
+                        <option value="">Nenhuma (tarefa de nível superior)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-nome">Nome *</label>
+                    <input type="text" id="tarefa-nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-descricao">Descrição</label>
+                    <textarea id="tarefa-descricao"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-responsavel">Responsável</label>
+                    <select id="tarefa-responsavel">
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-data-inicio">Data de Início</label>
+                    <input type="date" id="tarefa-data-inicio" onchange="validarPredecessoras()">
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-data-fim">Data de Fim</label>
+                    <input type="date" id="tarefa-data-fim">
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-custo">Custo (R$)</label>
+                    <input type="number" id="tarefa-custo" step="0.01" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-tempo">Tempo (horas) - Cada 8h = 1 dia</label>
+                    <input type="number" id="tarefa-tempo" step="0.5" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-observacao">Observação</label>
+                    <textarea id="tarefa-observacao"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tarefa-predecessoras">Tarefas Predecessoras</label>
+                    <select id="tarefa-predecessoras" multiple style="min-height: 100px;">
+                        <option value="">Selecione as predecessoras (segure Ctrl para múltiplas)</option>
+                    </select>
+                    <small style="color: #666;">A data de início não pode ser anterior à data de fim das predecessoras</small>
+                </div>
+                <div id="alert-predecessoras"></div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-tarefa')">Cancelar</button>
+                    <button type="submit" class="btn">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Pessoa -->
+    <div id="modal-pessoa" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-pessoa-title">Cadastrar Pessoa/Entidade</h2>
+                <button class="modal-close" onclick="closeModal('modal-pessoa')">&times;</button>
+            </div>
+            <form id="form-pessoa" onsubmit="salvarPessoa(event)">
+                <input type="hidden" id="pessoa-id">
+                <div class="form-group">
+                    <label for="pessoa-nome">Nome/Razão Social *</label>
+                    <input type="text" id="pessoa-nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="pessoa-tipo">Tipo *</label>
+                    <select id="pessoa-tipo" required>
+                        <option value="pessoa">Pessoa Física</option>
+                        <option value="entidade">Pessoa Jurídica/Entidade</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pessoa-email">Email</label>
+                    <input type="email" id="pessoa-email">
+                </div>
+                <div class="form-group">
+                    <label for="pessoa-telefone">Telefone</label>
+                    <input type="tel" id="pessoa-telefone">
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-pessoa')">Cancelar</button>
+                    <button type="submit" class="btn">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
